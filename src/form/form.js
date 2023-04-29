@@ -10,6 +10,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Typography from '@mui/material/Typography';
 
 
+
 class Form extends React.Component {
 
     constructor(props) {
@@ -18,7 +19,6 @@ class Form extends React.Component {
     }
 
     render() {
-
         const handleChange = (event, newSalary) => {
             if (newSalary.length) {
                 this.setState({ salary: newSalary })
@@ -109,8 +109,32 @@ class Form extends React.Component {
                             onChange={handleInputChange}
                         />
                     </FormControl>
+                    <div className="label">
+                        <label>Enter you percentage</label>
+                    </div>
+                    <FormControl fullWidth sx={{ mt: '10px', mb: '10px' }} label="Salary">
+                        <OutlinedInput
+                        type="number"
+                            // inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                            id="salary"
+                            endAdornment={<InputAdornment position="end">%</InputAdornment>}
+                            onChange={handleInputChange}
+                        />
+                    </FormControl>
+                     <div className="label">
+                        <label>Enter you deductible</label>
+                    </div>
+                    <FormControl fullWidth sx={{ mt: '10px', mb: '10px' }} label="Salary">
+                        <OutlinedInput
+                        type="number"
+                            // inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                            id="salary"
+                            endAdornment={<InputAdornment position="end">kr.</InputAdornment>}
+                            onChange={handleInputChange}
+                        />
+                    </FormControl>
 
-                    <Typography align="center" component={"div"} sx={{ fontWeight: "bold", fontSize: "1.3em" }}>Do you need to pay topskat?</Typography>
+                    <Typography align="center" component={"div"} sx={{ fontWeight: "bold", fontSize: "1.3em" }}>Are you paying topskat?</Typography>
 
                     <Typography id="result" align="center" component={"div"}
                         sx={{ fontWeight: "bold", color: "rgb(150,126,195)" }}>{this.state.shouldPay}</Typography>
@@ -118,6 +142,7 @@ class Form extends React.Component {
                     <Button id="calculate" onClick={caclulateSkat} fullWidth 
                         sx={{ backgroundColor: 'rgb(48,47,78)', fontWeight: 'bold', color: '#fff', textTransform: 'none', fontSize: '1.5em' }}>Calculate</Button>
                 </form>
+               
             </ThemeProvider>
         )
     }

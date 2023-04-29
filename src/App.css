@@ -45,7 +45,6 @@ div {
   color: rgba(119, 120, 124, 5)
 }
 div.label {
-  margin-bottom: 10px;
   font-weight: bold;
 }
 
@@ -56,4 +55,36 @@ div.label {
 
 #calculate:hover {
   background-color: rgba(48,47,78,5);
+}
+
+strong.amount {
+  float: right;
+}
+
+div.result_wrapper {
+  width: 65%;
+}
+
+div.calc_result {
+  margin-top: 20px;
+}
+
+.calc_label_tax::before {
+  content: "\25A0";
+  color: rgba(151,126,196, 1);
+}
+
+.calc_label_top::before {
+  content: "\25A0";
+  color:  rgba(223,136,133, 1);
+}
+
+.calc_label_tax::before {
+  content: "\25A0";
+  color: rgba(151,126,196, 1);
+}
+
+.calc_label_income::before {
+  content: "\25A0";
+  color: rgba(156, 211, 194, 1);
 }
