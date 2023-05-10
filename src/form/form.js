@@ -15,34 +15,14 @@ class Form extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { salary: 'monthly', value: '', shouldPay: '?' };
+        // this.state = { salaryType: 'monthly', salary: 0, shouldPay: '?', percents: 0, deductible: 0 };
     }
 
     render() {
-        const handleChange = (event, newSalary) => {
-            if (newSalary.length) {
-                this.setState({ salary: newSalary })
-            }
 
-        }
-
-        const caclulateSkat = () => {
-            const multiplier = this.state.salary === 'monthly' ? 12 : 1;
-            //console.log(multiplier, this.state.value);
-
-            const amount = this.state.value * multiplier;
-            if ( amount >= 666000) {
-                this.setState({shouldPay: "YES"})
-            } else if (amount < 666000) {
-                this.setState({shouldPay: "NO"})
-            } else {
-                this.setState({shouldPay: "?"})
-            }
-        }
-
-        const handleInputChange = (e) => {
-            this.setState({ value: e.target.value })
-        }
+        // const handleInputChange = (e) => {
+        //     this.setState({ value: e.target.value })
+        // }
 
         const theme = createTheme({
             palette: {
@@ -51,7 +31,6 @@ class Form extends React.Component {
                     darker: 'rgb(150, 126, 195)'
                 },
                 secondary: {
-                    // This is green.A700 as hex.
                     main: '#11cb5f',
                 },
             },
@@ -90,59 +69,63 @@ class Form extends React.Component {
                     </div>
                     <ToggleButtonGroup
                         color="primary"
-                        value={this.state.salary}
+                        value={this.props.salaryType}
                         exclusive
-                        onChange={handleChange}
+                        onChange={this.props.toggleHandler}
                         aria-label="Salary"
                         size="small"
-
+                        name="salaryType"
+                        sx={{mt: '10px'}}
                     >
                         <ToggleButton value="monthly">Monthly</ToggleButton>
                         <ToggleButton value="yearly">Yearly</ToggleButton>
                     </ToggleButtonGroup>
                     <FormControl fullWidth sx={{ mt: '10px', mb: '10px' }} label="Salary">
                         <OutlinedInput
-                        type="number"
+                            type="number"
                             // inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                             id="salary"
+                            name="salary"
                             endAdornment={<InputAdornment position="end">kr.</InputAdornment>}
-                            onChange={handleInputChange}
+                            onChange={this.props.inputHandler}
                         />
                     </FormControl>
                     <div className="label">
                         <label>Enter you percentage</label>
                     </div>
-                    <FormControl fullWidth sx={{ mt: '10px', mb: '10px' }} label="Salary">
+                    <FormControl fullWidth sx={{ mt: '10px', mb: '10px' }} label="Percentage">
                         <OutlinedInput
-                        type="number"
+                            type="number"
                             // inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                            id="salary"
+                            id="percentage"
+                            name="percents"
                             endAdornment={<InputAdornment position="end">%</InputAdornment>}
-                            onChange={handleInputChange}
+                            onChange={this.props.inputHandler}
                         />
                     </FormControl>
-                     <div className="label">
+                    <div className="label">
                         <label>Enter you deductible</label>
                     </div>
-                    <FormControl fullWidth sx={{ mt: '10px', mb: '10px' }} label="Salary">
+                    <FormControl fullWidth sx={{ mt: '10px', mb: '10px' }} label="Deductible">
                         <OutlinedInput
-                        type="number"
+                            type="number"
                             // inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                            id="salary"
+                            id="deductible"
+                            name="deductible"
                             endAdornment={<InputAdornment position="end">kr.</InputAdornment>}
-                            onChange={handleInputChange}
+                            onChange={this.props.inputHandler}
                         />
                     </FormControl>
 
                     <Typography align="center" component={"div"} sx={{ fontWeight: "bold", fontSize: "1.3em" }}>Are you paying topskat?</Typography>
 
                     <Typography id="result" align="center" component={"div"}
-                        sx={{ fontWeight: "bold", color: "rgb(150,126,195)" }}>{this.state.shouldPay}</Typography>
+                        sx={{ fontWeight: "bold", color: "rgb(150,126,195)" }}>{this.props.shouldPay}</Typography>
 
-                    <Button id="calculate" onClick={caclulateSkat} fullWidth 
+                    <Button id="calculate" onClick={this.props.caclulateSkat} fullWidth
                         sx={{ backgroundColor: 'rgb(48,47,78)', fontWeight: 'bold', color: '#fff', textTransform: 'none', fontSize: '1.5em' }}>Calculate</Button>
                 </form>
-               
+
             </ThemeProvider>
         )
     }

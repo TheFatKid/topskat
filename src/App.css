@@ -88,3 +88,7 @@ div.calc_result {
   content: "\25A0";
   color: rgba(156, 211, 194, 1);
 }
+
+.logo {
+  margin-bottom: 10px;
+}
