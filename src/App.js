@@ -1,5 +1,5 @@
-import logo from './logo.svg';
 import './App.css';
+import logo from './logo.svg';
 import Form from './form/form';
 import { Grid, Box } from "@mui/material";
 import Typography from '@mui/material/Typography';
@@ -11,21 +11,23 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { 
-      salaryType: 'monthly', 
-      salary: 0, 
-      shouldPay: '?', 
-      percents: 0, 
+    this.state = {
+      salaryType: 'monthly',
+      salary: 0,
+      shouldPay: '?',
+      percents: 0,
       deductible: 0,
-      beforeNetTax: 0, 
+      beforeNetTax: 0,
       topskat: 0,
       skat: 0,
       afterTax: 0,
     };
+    this.resultRef = React.createRef()  
   }
-  
+
   render() {
-    ChartJS.register(ArcElement, Tooltip, Legend);
+ //   const resultRef = useRef(null);
+    ChartJS.register(ArcElement, Tooltip);
     const centerText = {
       beforeDraw: function (chart) {
         if (chart.config.options.elements.center) {
@@ -50,12 +52,12 @@ class App extends React.Component {
           // Find out how much the font can grow in width.
           var widthRatio = elementWidth / stringWidth;
           var newFontSize = Math.floor(30 * widthRatio);
-          var elementHeight = (chart.innerRadius * 2);
+          var elementHamSkat = (chart.innerRadius * 2);
 
-          // Pick a new font size so it will not be larger than the height of label.
-          var fontSizeToUse = Math.min(newFontSize, elementHeight, maxFontSize);
+          // Pick a new font size so it will not be larger than the hamSkat of label.
+          var fontSizeToUse = Math.min(newFontSize, elementHamSkat, maxFontSize);
           var minFontSize = centerConfig.minFontSize;
-          var lineHeight = centerConfig.lineHeight || 25;
+          var lineHamSkat = centerConfig.lineHamSkat || 25;
           var wrapText = false;
 
           if (minFontSize === undefined) {
@@ -97,12 +99,12 @@ class App extends React.Component {
             }
           }
 
-          // Move the center up depending on line height and number of lines
-          centerY -= (lines.length / 2) * lineHeight;
+          // Move the center up depending on line hamSkat and number of lines
+          centerY -= (lines.length / 2) * lineHamSkat;
 
           for (var n = 0; n < lines.length; n++) {
             ctx.fillText(lines[n], centerX, centerY);
-            centerY += lineHeight;
+            centerY += lineHamSkat;
           }
           //Draw text in center
           ctx.fillText(line, centerX, centerY);
@@ -111,6 +113,9 @@ class App extends React.Component {
     }
 
     const options = {
+      legend: {
+        display: false
+      },
       elements: {
         center: {
           text: this.state.salary + ' DKK',
@@ -118,27 +123,33 @@ class App extends React.Component {
           fontStyle: 'Arial', // Default is Arial
           sidePadding: 10, // Default is 20 (as a percentage)
           minFontSize: 10, // Default is 20 (in px), set to false and text will not wrap.
-          lineHeight: 10 // Default is 25 (in px), used for when text wraps
+          lineHamSkat: 10 // Default is 25 (in px), used for when text wraps
         }
       },
-      cutout: '80%'
-    }
+      cutout: '80%',
+    };
     const data = {
+      labels: ['Income after tax', 'Tax', 'Top Skat'],
       datasets: [
         {
-          label: 'Amount, DKK',
-          data: [this.state.afterTax, this.state.skat, this.state.beforeNetTax, this.state.topskat],
+          label: 'DKK',
+          data: [
+            this.state.afterTax,
+
+            this.state.skat,
+            //this.state.beforeNetTax,
+            this.state.topskat],
           backgroundColor: [
             'rgba(156, 211, 194, 1)',
             'rgba(151,126,196, 1)',
+            //   'rgba(223,136,133, 1)',
             'rgba(223,136,133, 1)',
-            'rgba(235,187,132, 1)',
           ],
           borderColor: [
             'rgba(156, 211, 194, 1)',
             'rgba(151,126,196, 1)',
+            //  'rgba(223,136,133, 1)',
             'rgba(223,136,133, 1)',
-            'rgba(235,187,132, 1)',
           ],
           // borderWidth: 1,
         },
@@ -149,6 +160,14 @@ class App extends React.Component {
       const target = event.target;
       const value = target.type === 'checkbox' ? target.checked : target.value;
       const name = target.name;
+
+      if (target.type === 'number' && target.value < 0) {
+        target.value = 0;
+      }
+
+      if (name === 'percents' && target.value > 100) {
+        target.value = 100;
+      }
 
       this.setState({
         [name]: value
@@ -161,33 +180,34 @@ class App extends React.Component {
       }
     }
 
-
     const caclulateSkat = () => {
       const multiplier = this.state.salaryType === 'monthly' ? 12 : 1;
       const percentage = this.state.percents;
-      //console.log(multiplier, this.state.value);
 
-      const amount = this.state.salary * multiplier - this.state.deductible * multiplier;
-      const eight = amount * 0.08;
-      this.setState({beforeNetTax: amount - eight})
-      const tax = (amount - eight) * percentage / 100;
-      this.setState({skat: tax});
+      const amount = this.state.salary ;
+      const amSkat = amount * 0.08;
+      this.setState({ beforeNetTax: amount - amSkat })
+      const tax = (amount - amSkat - this.state.deductible) * percentage / 100;
 
-      console.log(amount, eight, tax, multiplier, percentage, amount - eight);
+      console.log(amSkat, tax, this.state.deductible, amount - amSkat - this.state.deductible)
+      this.setState({ skat: tax });
 
-      if (amount - eight >= 568900.4) {
-        const topskat = (this.state.salary * multiplier - 568900.4) * 0.15
+      if (amount * multiplier - amount * multiplier * 0.08 >= 568900.4) {
+        const topskat = (this.state.salary * multiplier - 568900.4) * 0.15 / 12
         this.setState({ shouldPay: "YES" })
         this.setState({ topskat: topskat })
-        this.setState({afterTax: this.state.salary * multiplier - eight - tax - topskat})
-      } else if (amount - eight < 568900.4) {
+        this.setState({ afterTax: this.state.salary - amSkat - tax - topskat })
+      } else if (amount * multiplier - amount * multiplier * 0.08 < 568900.4) {
         this.setState({ shouldPay: "NO" })
-        this.setState({afterTax: this.state.salary * multiplier - eight - tax})
+        this.setState({ afterTax: this.state.salary - amSkat - tax })
       } else {
         this.setState({ shouldPay: "?" })
       }
+      setTimeout(() => this.resultRef.current.scrollIntoView({ behavior: "smooth"}), 2);
+      
     }
-    // console.log(this.state);
+
+    const numberFormatter = Intl.NumberFormat('dk-DK', { style: 'currency', currency: 'DKK' });
     return (
       <Grid container
         spacing={0}
@@ -199,7 +219,7 @@ class App extends React.Component {
           <Box
             sx={{
               // width: 1024,
-              // height: 500,
+              // hamSkat: 500,
               display: 'flex',
               // justifyContent: 'center',
               alignItems: 'center',
@@ -213,69 +233,72 @@ class App extends React.Component {
           >
             <div>
               <img src="logo.svg" className='logo' />
-              {/* <Typography variant="h3" component="h1" align="center" sx={{ fontWeight: "bold", mb: "20px" }}>Calculate Topskat</Typography> */}
-              <Form inputHandler={handleInputChange} toggleHandler={handleToggleChange} caclulateSkat={caclulateSkat} salaryType={this.state.salaryType} shouldPay={this.state.shouldPay} />
-            </div>
-          </Box>
-
-        </Grid>
-        <Grid item xs={12} md={9} bgcolor={'rgb(48,47,78)'}>
-          <Box
-            sx={{
-              // width: 1024,
-              // height: 500,
-              display: 'flex',
-              // justifyContent: 'center',
-              alignItems: 'center',
-              flexDirection: 'column',
-              // textAlign: 'center',
-              p: 10,
-              m: 1,
-
-              borderRadius: 4,
-            }}
-          >
-            <div>
-              <Doughnut data={data} plugins={[centerText]} options={options} />
+              {/* <Typography variant="h3" component="h1" align="center" sx={{ fontWamSkat: "bold", mb: "20px" }}>Calculate Topskat</Typography> */}
+              <Form inputHandler={handleInputChange} toggleHandler={handleToggleChange} caclulateSkat={caclulateSkat} salaryType={this.state.salaryType} shouldPay={this.state.shouldPay} resultRef={this.resultRef} />
             </div>
           </Box>
         </Grid>
-        <Grid item xs={12} md={9} bgcolor={'rgb(238, 241, 249)'}>
-          <Box
-            sx={{
-              // width: 1024,
-              // height: 500,
-              display: 'flex',
-              // justifyContent: 'center',
-              alignItems: 'center',
-              flexDirection: 'column',
-              // textAlign: 'center',
-              p: 10,
-              pt: 5,
-              m: 1,
+        {this.state.skat != 0 &&
+          <Grid ref={this.resultRef} item xs={12} md={9} bgcolor={'rgb(48,47,78)'}>
+            <Box
+              sx={{
+                // width: 1024,
+                // hamSkat: 500,
+                display: 'flex',
+                // justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column',
+                // textAlign: 'center',
+                p: 10,
+                m: 1,
 
-              borderRadius: 4,
-            }}
-          >
-            <div className="label">
-              <label>Your yearly overview</label>
-            </div>
-            <div className='result_wrapper'>
-              <div className='calc_result'>
-                <span className='calc_label_tax'>Tax</span><strong className='amount'>{this.state.skat} kr.</strong>
+                borderRadius: 4,
+              }}
+            >
+              <div>
+                <Doughnut data={data} plugins={[centerText]} options={options} />
               </div>
-              <div className='calc_result'>
-                <span className='calc_label_top'>Top tax</span><strong className='amount'>{this.state.topskat} kr.</strong>
+            </Box>
+          </Grid>
+        }
+        {this.state.skat != 0 &&
+          <Grid item xs={12} md={9} bgcolor={'rgb(238, 241, 249)'}>
+            <Box
+              sx={{
+                // width: 1024,
+                // hamSkat: 500,
+                display: 'flex',
+                // justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column',
+                // textAlign: 'center',
+                p: 10,
+                pt: 5,
+                m: 1,
+
+                borderRadius: 4,
+              }}
+            >
+              <div className="label">
+                <label>Your yearly overview</label>
               </div>
-              <div className='calc_result'>
-                <span className='calc_label_total'>Total tax</span><strong className='amount'>{this.state.topskat} kr.</strong>
+              <div className='result_wrapper'>
+                <div className='calc_result'>
+                  <span className='calc_label_tax'>Tax</span><strong className='amount'>{numberFormatter.format(this.state.skat)}</strong>
+                </div>
+                <div className='calc_result'>
+                  <span className='calc_label_top'>Top tax</span><strong className='amount'>{numberFormatter.format(this.state.topskat)}</strong>
+                </div>
+                <div className='calc_result'>
+                  <span className='calc_label_total_tax'>Total tax</span><strong className='amount'>{numberFormatter.format(this.state.skat + this.state.topskat)}</strong>
+                </div>
+                <div className='calc_result'>
+                  <span className='calc_label_income'>Income after tax</span><strong className='amount'>{numberFormatter.format(this.state.afterTax)}</strong>
+                </div>
               </div>
-              <div className='calc_result'>
-                <span className='calc_label_income'>Income after tax</span><strong className='amount'>{this.state.afterTax} kr.</strong>
-              </div>
-            </div>
-          </Box>
-        </Grid>
+            </Box>
+          </Grid>
+        }
       </Grid>
     )
   }

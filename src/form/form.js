@@ -9,8 +9,6 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import Typography from '@mui/material/Typography';
 
-
-
 class Form extends React.Component {
 
     constructor(props) {
@@ -99,6 +97,7 @@ class Form extends React.Component {
                             // inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                             id="percentage"
                             name="percents"
+                            inputProps={{min: 0, max: 100}}
                             endAdornment={<InputAdornment position="end">%</InputAdornment>}
                             onChange={this.props.inputHandler}
                         />

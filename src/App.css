@@ -79,9 +79,9 @@ div.calc_result {
   color:  rgba(223,136,133, 1);
 }
 
-.calc_label_tax::before {
+.calc_label_total_tax::before {
   content: "\25A0";
-  color: rgba(151,126,196, 1);
+  color: rgba(235,186,133, 1);
 }
 
 .calc_label_income::before {
